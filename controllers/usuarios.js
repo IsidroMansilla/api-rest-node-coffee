@@ -87,11 +87,14 @@ const usuariosPost = async(req, res = response) =>{
 //};
 const usuariosDelete = async(req, res = response) =>{
     const {id} = req.params;
+    //el UID va en la request, primero creamos la variable en validar-jwt y la request sigue su proceso hasta llegar aquí
     const uid = req.uid;
     const usuario = await Usuario.findByIdAndUpdate(id, {estado:false});
+    const usuarioAutenticado = req.usuario;
+
     res.json({
-        usuario, uid
-    })
+        usuario
+    });
 };
 
 module.exports = {

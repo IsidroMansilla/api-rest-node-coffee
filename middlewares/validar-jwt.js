@@ -1,8 +1,9 @@
 const { response } = require('express');
 const jwt = require('jsonwebtoken');
+const Usuario = require('../models/usuario');
 
 
-const validarJWT = (req = request, res = response, next) =>{
+const validarJWT = async(req = request, res = response, next) =>{
     const token = req.header('x-token');
 
     if(!token){
@@ -13,7 +14,21 @@ const validarJWT = (req = request, res = response, next) =>{
     try {
         //Verifica que el token es válido -> tiene que tener forma de token
         const {uid} = jwt.verify(token, process.env.SECRETORPRIVATEKEY);
-        req.uid = uid;
+        const usuario = await Usuario.findById(uid);
+        //Verificar si el uid tiene estado = true
+        if(!usuario){
+            return res.status(401).json({
+                msg: 'Usuario no existe'
+            })
+        }
+        
+        if(!usuario.estado){
+            return res.status(401).json({
+                msg: 'Usuario no válido para eliminiar'
+            })
+        }
+
+        req.usuario = usuario;
         next();
         
     } catch (error) {
