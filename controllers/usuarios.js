@@ -8,12 +8,22 @@ const Usuario = require('../models/usuario');
 const usuariosGet = async(req, res = response) =>{
     
     const {limite = "5", desde ="0"} = req.query;
-    const usuarios = await Usuario
-                                .find()
-                                .skip(desde)
-                                .limit(limite);
-    const total = await Usuario.countDocuments();
-    console.log(total);
+    //const usuarios = await Usuario
+    //                            .find({estado: true})
+    //                            .skip(desde)
+    //                            .limit(limite);
+    //const total = await Usuario.countDocuments({estado: true});
+    //Los await que hay encima son bloqueantes... Esperar a que termine el primero y despues esperar a que termine el segundo
+    //Con Promise.all ejecuta los dos await de manera simultanea
+    const [total, usuarios] = await Promise.all(
+        [
+            Usuario.countDocuments({estado: true}),
+            Usuario
+                .find({estado: true})
+                .skip(desde)
+                .limit(limite)
+        ]
+    )
     res.json({total, usuarios});
 };
 
