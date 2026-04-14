@@ -73,9 +73,23 @@ const usuariosPost = async(req, res = response) =>{
     });
 };
 
-const usuariosDelete = (req, res = response) =>{
+//*************************************************************************** */
+//Normalmente no se hace de esta manera ya que perdemos toda la info del usuario
+// , lo que se debe hacer es cambiar el estado,
+//Miramos usuariosDelete siguiente
+//*************************************************************************** */
+//const usuariosDelete = async(req, res = response) =>{
+//    const {id} = req.params;
+//    const usuario = await Usuario.findByIdAndDelete(id);
+//    res.json({
+//        usuario
+//    })
+//};
+const usuariosDelete = async(req, res = response) =>{
+    const {id} = req.params;
+    const usuario = await Usuario.findByIdAndUpdate(id, {estado:false});
     res.json({
-        msg: 'delete API - Controlador'
+        usuario
     })
 };
 
