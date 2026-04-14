@@ -5,16 +5,16 @@ const { validationResult } = require('express-validator');
 
 const Usuario = require('../models/usuario');
 
-const usuariosGet = (req, res = response) =>{
+const usuariosGet = async(req, res = response) =>{
     
-    //const query = req.query;
-    const {nombre = null, apellido = null} = req.query 
-    res.json({
-        msg: 'get API - Controlador',
-        //query
-        nombre,
-        apellido
-    })
+    const {limite = "5", desde ="0"} = req.query;
+    const usuarios = await Usuario
+                                .find()
+                                .skip(desde)
+                                .limit(limite);
+    const total = await Usuario.countDocuments();
+    console.log(total);
+    res.json({total, usuarios});
 };
 
 const usuariosPut = async(req, res = response) =>{
